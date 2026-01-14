@@ -15,6 +15,32 @@ Guide completion of development work by presenting clear options and handling ch
 
 ## The Process
 
+### Step 0: Verify Documentation Artifacts
+
+**Before anything else, verify the Feature Documentation exists.**
+
+1.  **Identify Feature Key:** Extract from branch name (e.g., `feature/user-auth` -> `user-auth`) or ask user.
+2.  **Check Artifacts:**
+    Run `ls docs/features/<feature-key>/` and verify ALL 7 files exist:
+    *   `business.md`
+    *   `prd.md`
+    *   `tech-design.md`
+    *   `implementation-plan.md`
+    *   `test-plan.md`
+    *   `test-report.log`
+    *   `cr-report.md` (Must contain "Status: PASS")
+
+**If any are missing:**
+```
+Missing required artifacts in docs/features/<feature-key>/:
+- [list missing files]
+
+Cannot proceed. Please generate missing documentation.
+```
+Stop. Don't proceed.
+
+**If all present:** Continue to Step 1.
+
 ### Step 1: Verify Tests
 
 **Before presenting options, verify tests pass:**

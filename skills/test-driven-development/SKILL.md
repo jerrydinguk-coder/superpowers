@@ -44,6 +44,23 @@ Write code before the test? Delete it. Start over.
 
 Implement fresh from tests. Period.
 
+## Artifact-Driven TDD
+
+In the **Artifact-Driven SDD** workflow, TDD is not just a behavior, it's a documented process.
+
+1.  **Plan:** Before writing tests, check `docs/features/<feature-key>/test-plan.md` for the required scenarios.
+2.  **Prove:** After tests pass (Green), append the execution log to `docs/features/<feature-key>/test-report.log`.
+
+**Format for Log:**
+```text
+--- Test Run [YYYY-MM-DD HH:MM] ---
+Task: [Task Name]
+Command: npm test path/to/test.ts
+Output:
+...
+PASS ...
+```
+
 ## Red-Green-Refactor
 
 ```dot

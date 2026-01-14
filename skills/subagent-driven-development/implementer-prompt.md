@@ -13,6 +13,8 @@ Task tool (general-purpose):
     [FULL TEXT of task from plan - paste it here, don't make subagent read file]
 
     ## Context
+    Feature Key: [feature-key]
+    Documentation Path: docs/features/[feature-key]/
 
     [Scene-setting: where this fits, dependencies, architectural context]
 
@@ -29,14 +31,20 @@ Task tool (general-purpose):
     ## Your Job
 
     Once you're clear on requirements:
-    1. Implement exactly what the task specifies
-    2. Write tests (following TDD if task says to)
-    3. Verify implementation works
+    1. **TDD is MANDATORY.** Write tests based on `docs/features/[feature-key]/test-plan.md` first.
+    2. Implement exactly what the task specifies to make tests pass.
+    3. **Run Tests & Log:** Append the full test output to `docs/features/[feature-key]/test-report.log`.
+       - Format: `\n\n--- Test Run [Timestamp] ---\n[Output]`
     4. Commit your work
     5. Self-review (see below)
     6. Report back
 
     Work from: [directory]
+
+    **Definition of Done:**
+    - Code implemented
+    - Tests passing
+    - `test-report.log` updated with passing results
 
     **While you work:** If you encounter something unexpected or unclear, **ask questions**.
     It's always OK to pause and clarify. Don't guess or make assumptions.

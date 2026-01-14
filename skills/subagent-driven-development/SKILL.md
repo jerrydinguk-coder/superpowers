@@ -37,6 +37,12 @@ digraph when_to_use {
 
 ## The Process
 
+**Initialization:**
+1.  **Ask for Feature Key:** "Please provide the `feature-key` for this implementation (e.g., `user-auth`)."
+2.  **Verify Test Plan:** Check if `docs/features/<feature-key>/test-plan.md` exists.
+    *   **If NO:** The *only* allowed first task is "Create Test Plan".
+    *   **If YES:** Proceed with implementation tasks.
+
 ```dot
 digraph process {
     rankdir=TB;
@@ -47,11 +53,13 @@ digraph process {
         "Implementer subagent asks questions?" [shape=diamond];
         "Answer questions, provide context" [shape=box];
         "Implementer subagent implements, tests, commits, self-reviews" [shape=box];
+        "Implementer appends results to test-report.log" [shape=box style=filled fillcolor=lightblue];
         "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [shape=box];
         "Spec reviewer subagent confirms code matches spec?" [shape=diamond];
         "Implementer subagent fixes spec gaps" [shape=box];
         "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [shape=box];
         "Code quality reviewer subagent approves?" [shape=diamond];
+        "Reviewer writes to cr-report.md" [shape=box style=filled fillcolor=lightblue];
         "Implementer subagent fixes quality issues" [shape=box];
         "Mark task complete in TodoWrite" [shape=box];
     }

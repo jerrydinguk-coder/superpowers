@@ -13,15 +13,19 @@ Start by understanding the current project context, then ask questions one at a 
 
 ## The Process
 
+**Initialization:**
+- **Ask for Feature Key:** "Before we begin, please provide a short, kebab-case 'Feature Key' for this task (e.g., `user-auth`, `payment-gateway`). This will be used to organize all documentation in `docs/features/<feature-key>/`."
+- Create the directory `docs/features/<feature-key>/` immediately if it doesn't exist.
+
 **Understanding the idea:**
 - Check out the current project state first (files, docs, recent commits)
 - Ask questions one at a time to refine the idea
 - Prefer multiple choice questions when possible, but open-ended is fine too
 - Only one question per message - if a topic needs more exploration, break it into multiple questions
-- Focus on understanding: purpose, constraints, success criteria
+- Focus on understanding: purpose, constraints, success criteria (for `business.md` and `prd.md`)
 
 **Exploring approaches:**
-- Propose 2-3 different approaches with trade-offs
+- Propose 2-3 different approaches with trade-offs (for `tech-design.md`)
 - Present options conversationally with your recommendation and reasoning
 - Lead with your recommended option and explain why
 
@@ -34,15 +38,32 @@ Start by understanding the current project context, then ask questions one at a 
 
 ## After the Design
 
-**Documentation:**
-- Write the validated design to `docs/plans/YYYY-MM-DD-<topic>-design.md`
-- Use elements-of-style:writing-clearly-and-concisely skill if available
-- Commit the design document to git
+**Documentation (Mandatory):**
+Write the following THREE files to `docs/features/<feature-key>/`:
+
+1.  **`business.md`**:
+    *   **Context:** Why are we doing this?
+    *   **Business Value:** What is the benefit?
+    *   **Success Metrics:** How do we know it worked?
+
+2.  **`prd.md`**:
+    *   **User Stories:** Who wants what and why?
+    *   **Functional Requirements:** Specific capabilities.
+    *   **Acceptance Criteria:** Checklist for "done".
+
+3.  **`tech-design.md`**:
+    *   **Architecture:** Diagram or description.
+    *   **Data Models:** Schema changes.
+    *   **API Design:** Endpoints/Interfaces.
+    *   **Security:** Auth/Permissions.
+
+- **Verification:** Verify all 3 files exist on disk using `ls docs/features/<feature-key>/`.
+- Commit the design documents to git.
 
 **Implementation (if continuing):**
 - Ask: "Ready to set up for implementation?"
-- Use superpowers:using-git-worktrees to create isolated workspace
-- Use superpowers:writing-plans to create detailed implementation plan
+- Use superpowers:using-git-worktrees to create isolated workspace (if not already in one)
+- Use superpowers:writing-plans to create the implementation plan (Note: Pass the `<feature-key>` to it)
 
 ## Key Principles
 

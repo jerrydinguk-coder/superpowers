@@ -15,7 +15,11 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Context:** This should be run in a dedicated worktree (created by brainstorming skill).
 
-**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
+**Input:**
+- Ask for the `feature-key` (e.g., `user-auth`) to locate the PRD and Tech Design.
+- Read `docs/features/<feature-key>/prd.md` and `docs/features/<feature-key>/tech-design.md` for context.
+
+**Save plans to:** `docs/features/<feature-key>/implementation-plan.md`
 
 ## Bite-Sized Task Granularity
 
@@ -42,6 +46,23 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 **Tech Stack:** [Key technologies/libraries]
 
 ---
+```
+
+## Mandatory Task 0: Test Planning
+
+**The FIRST task in every plan MUST be:**
+
+```markdown
+### Task 0: Create Test Plan
+
+**Files:**
+- Create: `docs/features/<feature-key>/test-plan.md`
+
+**Description:**
+Create a detailed test plan listing all scenarios to be tested based on the PRD.
+1.  Read `docs/features/<feature-key>/prd.md`.
+2.  Extract all Acceptance Criteria and edge cases.
+3.  Write `test-plan.md` with a checklist of scenarios.
 ```
 
 ## Task Structure
@@ -98,7 +119,7 @@ git commit -m "feat: add specific feature"
 
 After saving the plan, offer execution choice:
 
-**"Plan complete and saved to `docs/plans/<filename>.md`. Two execution options:**
+**"Plan complete and saved to `docs/features/<feature-key>/implementation-plan.md`. Two execution options:**
 
 **1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
 
@@ -108,6 +129,7 @@ After saving the plan, offer execution choice:
 
 **If Subagent-Driven chosen:**
 - **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
+- **IMPORTANT:** Pass the `feature-key` to the skill so it can find the artifacts.
 - Stay in this session
 - Fresh subagent per task + code review
 
