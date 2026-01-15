@@ -53,7 +53,7 @@ digraph process {
         "Implementer subagent asks questions?" [shape=diamond];
         "Answer questions, provide context" [shape=box];
         "Implementer subagent implements, tests, commits, self-reviews" [shape=box];
-        "Implementer appends results to test-report.log" [shape=box style=filled fillcolor=lightblue];
+        "Implementer appends results to test-report.md" [shape=box style=filled fillcolor=lightblue];
         "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [shape=box];
         "Spec reviewer subagent confirms code matches spec?" [shape=diamond];
         "Implementer subagent fixes spec gaps" [shape=box];
@@ -193,7 +193,7 @@ Done!
 
 **Quality gates:**
 - Self-review catches issues before handoff
-- **TDD Proof:** `test-report.log` must contain "RED" failure evidence for every task. If code passes immediately without a recorded failure, the task is INVALID.
+- **TDD Proof:** `test-report.md` must contain "RED" failure evidence for every task. If code passes immediately without a recorded failure, the task is INVALID.
 - Two-stage review: spec compliance, then code quality
 - Review loops ensure fixes actually work
 - Spec compliance prevents over/under-building

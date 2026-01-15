@@ -91,45 +91,54 @@ Which option?
 
 ### Step 4: Execute Choice
 
+**MANDATORY: For Options 1, 2, and 4, you MUST preview commands and get confirmation.**
+
 #### Option 1: Merge Locally
 
+**1. Preview Commands:**
+```
+I will run the following commands to merge locally:
+
+git checkout <base-branch>
+git pull
+git merge <feature-branch>
+<test command>
+git branch -d <feature-branch>
+git worktree remove <worktree-path>
+
+Run these commands? (y/n)
+```
+
+**2. Wait for "y".**
+
+**3. Execute:**
 ```bash
 # Switch to base branch
 git checkout <base-branch>
-
-# Pull latest
-git pull
-
-# Merge feature branch
-git merge <feature-branch>
-
-# Verify tests on merged result
-<test command>
-
-# If tests pass
-git branch -d <feature-branch>
+... (run the previewed commands)
 ```
-
-Then: Cleanup worktree (Step 5)
 
 #### Option 2: Push and Create PR
 
+**1. Preview Commands:**
+```
+I will run the following commands to create a PR:
+
+git push -u origin <feature-branch>
+gh pr create --title "<title>" ...
+git worktree remove <worktree-path>
+
+Run these commands? (y/n)
+```
+
+**2. Wait for "y".**
+
+**3. Execute:**
 ```bash
 # Push branch
 git push -u origin <feature-branch>
-
-# Create PR
-gh pr create --title "<title>" --body "$(cat <<'EOF'
-## Summary
-<2-3 bullets of what changed>
-
-## Test Plan
-- [ ] <verification steps>
-EOF
-)"
+... (run the previewed commands)
 ```
-
-Then: Cleanup worktree (Step 5)
 
 #### Option 3: Keep As-Is
 
@@ -139,25 +148,24 @@ Report: "Keeping branch <name>. Worktree preserved at <path>."
 
 #### Option 4: Discard
 
-**Confirm first:**
+**1. Preview Commands:**
 ```
-This will permanently delete:
-- Branch <name>
-- All commits: <commit-list>
-- Worktree at <path>
+I will run the following commands to PERMANENTLY DISCARD this work:
+
+git checkout <base-branch>
+git branch -D <feature-branch>
+git worktree remove <worktree-path>
 
 Type 'discard' to confirm.
 ```
 
-Wait for exact confirmation.
+**2. Wait for exact "discard" confirmation.**
 
-If confirmed:
+**3. Execute:**
 ```bash
 git checkout <base-branch>
-git branch -D <feature-branch>
+... (run the previewed commands)
 ```
-
-Then: Cleanup worktree (Step 5)
 
 ### Step 5: Cleanup Worktree
 

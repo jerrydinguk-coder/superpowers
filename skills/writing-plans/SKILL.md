@@ -48,26 +48,31 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 ---
 ```
 
-## Mandatory Task 0: Test Planning
+## Mandatory Task 0: Test Planning & Initialization
 
 **The FIRST task in every plan MUST be:**
 
 ```markdown
-### Task 0: Create Test Plan
+### Task 0: Create Test Plan & Initialize Reports
 
 **Files:**
 - Create: `docs/features/<feature-key>/test-plan.md`
+- Create: `docs/features/<feature-key>/test-report.md`
+- Create: `docs/features/<feature-key>/cr-report.md`
 
 **Description:**
-Create a detailed test plan listing all scenarios to be tested based on the PRD.
-1.  Read `docs/features/<feature-key>/prd.md`.
-2.  Extract all Acceptance Criteria and edge cases.
-3.  Write `test-plan.md` using the following table format (IDs are REQUIRED):
+1.  **Test Plan:** Read `docs/features/<feature-key>/prd.md`, extract Acceptance Criteria and edge cases. Write `test-plan.md` with this table format (IDs REQUIRED):
+    | ID | Category | Scenario Description | Expected Result |
+    | :--- | :--- | :--- | :--- |
+    | TC-001 | Happy Path | ... | ... |
 
-| ID | Category | Scenario Description | Expected Result |
-| :--- | :--- | :--- | :--- |
-| TC-001 | Happy Path | User logs in with valid creds | Token returned |
-| TC-002 | Edge Case | User logs in with empty password | 400 Bad Request |
+2.  **Test Report:** Create `test-report.md` initialized with the table structure defined in the `test-driven-development` skill:
+    | ID | Scenario | RED Evidence (Failure) | GREEN Evidence (Pass) |
+    | :--- | :--- | :--- | :--- |
+
+3.  **CR Report:** Create `cr-report.md` initialized with:
+    # Code Review Report
+    Status: IN_PROGRESS
 ```
 
 ## Task Structure
