@@ -49,16 +49,15 @@ Implement fresh from tests. Period.
 In the **Artifact-Driven SDD** workflow, TDD is not just a behavior, it's a documented process.
 
 1.  **Plan:** Before writing tests, check `docs/features/<feature-key>/test-plan.md` for the required scenarios.
-2.  **Prove:** After tests pass (Green), append the execution log to `docs/features/<feature-key>/test-report.log`.
+2.  **Prove (RED):** You MUST run your tests *before* implementing any code and record the failure. This is proof that your test is valid.
+3.  **Prove (GREEN):** After tests pass, record the success.
 
-**Format for Log:**
-```text
---- Test Run [YYYY-MM-DD HH:MM] ---
-Task: [Task Name]
-Command: npm test path/to/test.ts
-Output:
-...
-PASS ...
+**Mandatory Log Format (test-report.log):**
+```markdown
+### [Task ID] - [Scenario Name]
+- **Status:** [RED -> GREEN]
+- **Failure Evidence:** [Copy-paste the error message from the failing test run]
+- **Success Evidence:** [Copy-paste the passing test output snippet]
 ```
 
 ## Red-Green-Refactor

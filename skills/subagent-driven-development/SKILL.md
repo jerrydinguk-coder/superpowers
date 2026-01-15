@@ -193,6 +193,7 @@ Done!
 
 **Quality gates:**
 - Self-review catches issues before handoff
+- **TDD Proof:** `test-report.log` must contain "RED" failure evidence for every task. If code passes immediately without a recorded failure, the task is INVALID.
 - Two-stage review: spec compliance, then code quality
 - Review loops ensure fixes actually work
 - Spec compliance prevents over/under-building
@@ -218,6 +219,7 @@ Done!
 - Let implementer self-review replace actual review (both are needed)
 - **Start code quality review before spec compliance is ✅** (wrong order)
 - Move to next task while either review has open issues
+- **Accept test reports without RED (failure) state evidence** (Violates TDD).
 
 **If subagent asks questions:**
 - Answer clearly and completely

@@ -31,13 +31,33 @@ Task tool (general-purpose):
     ## Your Job
 
     Once you're clear on requirements:
-    1. **TDD is MANDATORY.** Write tests based on `docs/features/[feature-key]/test-plan.md` first.
-    2. Implement exactly what the task specifies to make tests pass.
-    3. **Run Tests & Log:** Append the full test output to `docs/features/[feature-key]/test-report.log`.
-       - Format: `\n\n--- Test Run [Timestamp] ---\n[Output]`
-    4. Commit your work
-    5. Self-review (see below)
-    6. Report back
+    1. **TDD is MANDATORY.**
+       - First, identify all scenarios from `docs/features/[feature-key]/test-plan.md` relevant to this task.
+       - **Phase RED:** Write tests for these scenarios and RUN them. They MUST fail. **Record the failure message.**
+       - **Phase GREEN:** Implement minimal code to make tests pass.
+    2. **Detailed Test Report:** You MUST update `docs/features/[feature-key]/test-report.log` with a structured entry for this task.
+
+    ### Test Report Required Format:
+    ```markdown
+    ## Task N: [Task Name] Execution Report
+    **Time:** [Timestamp]
+
+    ### 1. Scenario Coverage (Mapped from test-plan.md)
+    | Scenario ID | Description | RED State (Failure) | GREEN State (Pass) |
+    | :--- | :--- | :--- | :--- |
+    | [ID] | [Short Desc] | [Actual Error Message] | [Execution Status/Output] |
+
+    ### 2. Full Test Execution Evidence
+    **Command:** `npm test path/to/test.ts`
+    **Raw Output (Last 10 lines):**
+    ```text
+    [Paste actual terminal output here]
+    ```
+    ```
+
+    3. Commit your work
+    4. Self-review (see below)
+    5. Report back
 
     Work from: [directory]
 
