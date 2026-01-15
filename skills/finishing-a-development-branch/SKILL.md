@@ -27,7 +27,7 @@ Guide completion of development work by presenting clear options and handling ch
     *   `tech-design.md`
     *   `implementation-plan.md`
     *   `test-plan.md`
-    *   `test-report.log`
+    *   `test-report.md`
     *   `cr-report.md` (Must contain "Status: PASS")
 
 **If any are missing:**

@@ -48,17 +48,16 @@ Implement fresh from tests. Period.
 
 In the **Artifact-Driven SDD** workflow, TDD is not just a behavior, it's a documented process.
 
-1.  **Plan:** Before writing tests, check `docs/features/<feature-key>/test-plan.md` for the required scenarios.
-2.  **Prove (RED):** You MUST run your tests *before* implementing any code and record the failure. This is proof that your test is valid.
-3.  **Prove (GREEN):** After tests pass, record the success.
+1.  **Plan:** Before writing tests, check `docs/features/<feature-key>/test-plan.md` for the required scenarios (with IDs).
+2.  **Prove (RED):** You MUST run your tests *before* implementing any code.
+3.  **Report (Update Table):** You must update the `docs/features/<feature-key>/test-report.md` table.
 
-**Mandatory Log Format (test-report.log):**
-```markdown
-### [Task ID] - [Scenario Name]
-- **Status:** [RED -> GREEN]
-- **Failure Evidence:** [Copy-paste the error message from the failing test run]
-- **Success Evidence:** [Copy-paste the passing test output snippet]
-```
+**Report Table Format:**
+The `test-report.md` MUST duplicate the `test-plan.md` structure but add columns for RED/GREEN evidence:
+
+| ID | Scenario | RED Evidence (Failure) | GREEN Evidence (Pass) |
+| :--- | :--- | :--- | :--- |
+| TC-001 | ... | `Error: Expected 200 got 404` | `PASS: Status 200` |
 
 ## Red-Green-Refactor
 

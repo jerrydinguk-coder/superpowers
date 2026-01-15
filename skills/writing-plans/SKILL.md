@@ -62,7 +62,12 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 Create a detailed test plan listing all scenarios to be tested based on the PRD.
 1.  Read `docs/features/<feature-key>/prd.md`.
 2.  Extract all Acceptance Criteria and edge cases.
-3.  Write `test-plan.md` with a checklist of scenarios.
+3.  Write `test-plan.md` using the following table format (IDs are REQUIRED):
+
+| ID | Category | Scenario Description | Expected Result |
+| :--- | :--- | :--- | :--- |
+| TC-001 | Happy Path | User logs in with valid creds | Token returned |
+| TC-002 | Edge Case | User logs in with empty password | 400 Bad Request |
 ```
 
 ## Task Structure
