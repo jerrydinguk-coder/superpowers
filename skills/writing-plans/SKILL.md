@@ -19,7 +19,63 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 - Ask for the `feature-key` (e.g., `user-auth`) to locate the PRD and Tech Design.
 - Read `docs/features/<feature-key>/prd.md` and `docs/features/<feature-key>/tech-design.md` for context.
 
-**Save plans to:** `docs/features/<feature-key>/implementation-plan.md`
+**Output:**
+- `docs/features/<feature-key>/test-plan.md` (created FIRST, before planning)
+- `docs/features/<feature-key>/implementation-plan.md` (created SECOND, references test-plan.md)
+
+## The Planning Process
+
+### Step 1: Create Test Plan (BEFORE Implementation Plan)
+
+**MANDATORY:** Before writing any implementation plan, create the test plan.
+
+**Process:**
+1. **Read requirements:**
+   - Read `docs/features/<feature-key>/prd.md` to extract all requirements
+   - Read `docs/features/<feature-key>/tech-design.md` to understand technical architecture
+   - Identify all user scenarios, edge cases, and error conditions
+
+2. **Create test-plan.md:**
+   - Use `@test-plan-template.md` as the base structure
+   - Create file: `docs/features/<feature-key>/test-plan.md`
+
+3. **Fill in comprehensive test scenarios:**
+   - **Unique Test IDs:** TC-001, TC-002, etc. (will be referenced in implementation plan)
+   - **Categories:** Group tests logically (Auth, Validation, Security, etc.)
+   - **Test Types:** Unit, Integration, E2E
+   - **Priority Levels:** P0 (critical), P1 (important), P2 (nice-to-have)
+   - **Acceptance Criteria:** Specific, measurable outcomes
+   - **Dependencies:** What must exist for test to run
+   - **Edge Cases:** Boundary conditions, error states
+
+4. **Add Requirements Traceability Matrix:**
+   - Link each Test ID to Requirement IDs from prd.md
+   - Ensure every requirement has at least one test
+
+5. **Add Test Classification Summary:**
+   - By Priority (P0/P1/P2 distribution)
+   - By Type (Unit/Integration/E2E distribution)
+   - By Category (feature area distribution)
+
+**Example test-plan.md table:**
+```markdown
+| ID | Category | Scenario | Test Type | Priority | Acceptance Criteria | Dependencies | Edge Cases |
+|:---|:---------|:---------|:----------|:---------|:--------------------|:-------------|:-----------|
+| TC-001 | Auth | User login with valid credentials | Integration | P0 | Returns 200, sets auth token | User exists in DB | - |
+| TC-002 | Auth | User login with invalid password | Integration | P0 | Returns 401, shows error | User exists in DB | Rate limiting |
+```
+
+**Why test-plan.md comes first:**
+- Test scenarios guide what needs to be implemented
+- Implementation tasks can reference specific Test IDs
+- Ensures test-first thinking from the start
+- Prevents scope creep (only implement what's tested)
+
+### Step 2: Write Implementation Plan (AFTER Test Plan)
+
+**Now that test-plan.md exists, write the implementation plan.**
+
+**Save to:** `docs/features/<feature-key>/implementation-plan.md`
 
 ## Bite-Sized Task Granularity
 
@@ -48,51 +104,40 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 ---
 ```
 
-## Mandatory Task 0: Test Planning & Initialization
+## Mandatory Task 0: Initialize Test Reports
 
-**The FIRST task in every plan MUST be:**
+**The FIRST task in every implementation plan MUST be:**
+
+**NOTE:** test-plan.md already exists (created during planning phase). Task 0 only initializes the tracking/reporting files.
 
 ```markdown
-### Task 0: Create Test Plan & Initialize Reports
+### Task 0: Initialize Test Reports
+
+**Context:** test-plan.md was created during planning and already contains all Test IDs and scenarios.
 
 **Files:**
-- Create: `docs/features/<feature-key>/test-plan.md`
+- Read: `docs/features/<feature-key>/test-plan.md` (already exists)
 - Create: `docs/features/<feature-key>/test-report.md`
 - Create: `docs/features/<feature-key>/cr-report.md`
 
 **Description:**
 
-1.  **Test Plan:** Use `@test-plan-template.md` as the base structure.
-    - Read `docs/features/<feature-key>/prd.md` to extract requirements
-    - Read `docs/features/<feature-key>/tech-design.md` to understand architecture
-    - Create comprehensive test scenarios with:
-      - **Unique Test IDs** (TC-001, TC-002, etc.)
-      - **Categories** (Auth, Validation, Security, etc.)
-      - **Test Types** (Unit, Integration, E2E)
-      - **Priority Levels** (P0/P1/P2)
-      - **Acceptance Criteria** (specific, measurable)
-      - **Dependencies** (what must exist for test to run)
-      - **Edge Cases** (boundary conditions, error states)
-    - Include **Requirements Traceability Matrix** linking test cases to requirements
-    - Include **Test Classification Summary** (by priority, type, category)
-
-    **Required table format:**
-    | ID | Category | Scenario | Test Type | Priority | Acceptance Criteria | Dependencies | Edge Cases |
-    |:---|:---------|:---------|:----------|:---------|:--------------------|:-------------|:-----------|
-    | TC-001 | Auth | User login with valid credentials | Integration | P0 | Returns 200, sets auth token | User exists in DB | - |
-
-2.  **Test Report:** Use `@test-report-template.md` as the base structure.
+1.  **Test Report:** Use `@test-report-template.md` as the base structure.
     - Initialize with header section (Feature Key, Date, Environment)
-    - Create TDD Evidence Table with ALL Test IDs from test-plan.md
+    - **CRITICAL:** Read test-plan.md and copy ALL Test IDs
+    - Create TDD Evidence Table with exact same Test IDs from test-plan.md
     - Leave RED/GREEN evidence columns empty (to be filled during implementation)
     - Include sections for: Executive Summary, Detailed Results, Coverage Report, Classification Summary
 
-    **Required table format:**
+    **Required table format (Test IDs must match test-plan.md):**
+    ```markdown
     | ID | Scenario | RED Evidence (Before Implementation) | GREEN Evidence (After Implementation) | Test Command | Duration |
     |:---|:---------|:-------------------------------------|:--------------------------------------|:-------------|:---------|
     | TC-001 | User login valid | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
+    | TC-002 | Invalid password | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
+    ```
 
-3.  **CR Report:** Create `cr-report.md` initialized with:
+2.  **CR Report:** Create `cr-report.md` initialized with:
     ```markdown
     # Code Review Report
 
@@ -113,10 +158,10 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
     ```
 
 **Acceptance Criteria:**
-- test-plan.md contains all test scenarios with unique IDs
-- test-plan.md includes Requirements Traceability Matrix
-- test-report.md structure matches test-plan.md (same Test IDs)
-- All three artifact files created and committed
+- test-report.md Test IDs exactly match test-plan.md Test IDs
+- test-report.md structure ready for RED/GREEN evidence
+- cr-report.md initialized with checklist
+- All files committed
 ```
 
 ## Task Structure

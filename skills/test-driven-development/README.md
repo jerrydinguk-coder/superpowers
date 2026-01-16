@@ -28,29 +28,35 @@ This directory contains everything you need to practice strict, professional TDD
 
 ### 1. New Feature Implementation
 
-**Step 1: Create test-plan.md**
+**Step 1: During planning (writing-plans skill)**
+
+The `writing-plans` skill will automatically create test-plan.md:
+
 ```bash
-cp skills/test-driven-development/test-plan-template.md \
-   docs/features/<feature-key>/test-plan.md
+# writing-plans skill execution:
+# 1. Reads prd.md and tech-design.md
+# 2. Creates test-plan.md (BEFORE implementation-plan.md)
+# 3. Creates implementation-plan.md (can reference Test IDs)
 ```
 
-**Step 2: Fill in test scenarios**
+**Step 2: Fill in test scenarios (done by writing-plans agent)**
 - Assign Test IDs (TC-001, TC-002, etc.)
 - Define priorities (P0/P1/P2)
 - Specify test types (Unit/Integration/E2E)
 - Add Requirements Traceability Matrix
 
-**Step 3: Create test-report.md**
+**Step 3: During implementation (Task 0)**
+
+The first implementer subagent will initialize test-report.md:
+
 ```bash
-cp skills/test-driven-development/test-report-template.md \
-   docs/features/<feature-key>/test-report.md
+# Implementer executes Task 0:
+# 1. Reads test-plan.md (already exists)
+# 2. Creates test-report.md (copies Test IDs from test-plan.md)
+# 3. Creates cr-report.md
 ```
 
-**Step 4: Initialize test-report.md**
-- Copy Test IDs from test-plan.md
-- Leave RED/GREEN columns empty (to be filled during TDD)
-
-**Step 5: Start RED-GREEN-REFACTOR cycle**
+**Step 4: Start RED-GREEN-REFACTOR cycle**
 - For each Test ID: Write test → Run (RED) → Implement → Run (GREEN) → Refactor
 - Update test-report.md with evidence after each phase
 

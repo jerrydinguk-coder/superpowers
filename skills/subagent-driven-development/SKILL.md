@@ -39,9 +39,9 @@ digraph when_to_use {
 
 **Initialization:**
 1.  **Ask for Feature Key:** "Please provide the `feature-key` for this implementation (e.g., `user-auth`)."
-2.  **Verify Test Plan:** Check if `docs/features/<feature-key>/test-plan.md` exists.
-    *   **If NO:** The *only* allowed first task is "Create Test Plan".
-    *   **If YES:** Proceed with implementation tasks.
+2.  **Verify Test Plan Exists:** Check if `docs/features/<feature-key>/test-plan.md` exists.
+    *   **If NO:** STOP. Error: "test-plan.md must exist before implementation. Run writing-plans skill first."
+    *   **If YES:** Proceed with implementation tasks (test-plan.md was created during planning phase).
 
 ```dot
 digraph process {

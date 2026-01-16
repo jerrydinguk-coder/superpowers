@@ -223,21 +223,59 @@ src/auth/           |   94.12 |    88.24 |   95.00 |   94.44 |
 
 ## 🔄 完整工作流程
 
-### 1️⃣ 计划阶段（Planning）
-```bash
-# 创建 test-plan.md
-cp skills/test-driven-development/test-plan-template.md \
-   docs/features/<feature-key>/test-plan.md
+### 0️⃣ 规划阶段（Planning - writing-plans skill）
 
-# 填写内容
-vim docs/features/<feature-key>/test-plan.md
+**【新增】在这个阶段创建 test-plan.md**
+
+```bash
+# writing-plans skill 执行时：
+
+# 1. 读取需求和设计
+Read: docs/features/<feature-key>/prd.md
+Read: docs/features/<feature-key>/tech-design.md
+
+# 2. 创建 test-plan.md（在写 implementation-plan.md 之前）
+Create: docs/features/<feature-key>/test-plan.md
+
+# 3. 创建 implementation-plan.md（可以引用 Test IDs）
+Create: docs/features/<feature-key>/implementation-plan.md
 ```
 
-**必须填写：**
+**必须填写（test-plan.md）：**
 - [ ] Test Cases 表格（所有 Test IDs）
 - [ ] Requirements Traceability Matrix
 - [ ] Test Classification Summary
 - [ ] Test Strategy
+
+**关键点：**
+- test-plan.md **先于** implementation-plan.md 创建
+- 测试计划指导实施计划
+- implementation-plan.md 可以引用具体的 Test IDs
+
+---
+
+### 1️⃣ 初始化阶段（Initialization - Task 0）
+
+**【变更】Task 0 现在只初始化报告文件**
+
+```bash
+# implementer subagent 执行 Task 0
+
+# 1. 读取已存在的 test-plan.md
+Read: docs/features/<feature-key>/test-plan.md
+
+# 2. 创建 test-report.md（复制 Test IDs）
+Create: docs/features/<feature-key>/test-report.md
+
+# 3. 创建 cr-report.md
+Create: docs/features/<feature-key>/cr-report.md
+```
+
+**关键验证：**
+- test-report.md 的 Test IDs 必须与 test-plan.md 完全匹配
+- 所有 RED/GREEN 列留空（待填写）
+
+---
 
 ### 2️⃣ RED 阶段（Write Failing Test）
 ```bash
@@ -270,6 +308,8 @@ npm test tests/feature.test.ts
 ```markdown
 | TC-001 | ... | ❌ ... | ✅ `PASS` All assertions passed (45ms) | npm test ... | 45ms |
 ```
+
+---
 
 ### 4️⃣ 更新汇总信息
 每完成一个测试，更新：

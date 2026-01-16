@@ -9,11 +9,14 @@ This document demonstrates the complete TDD workflow using the enhanced test-pla
 
 ---
 
-## Phase 1: Test Planning (Before Any Code)
+## Phase 0: Planning (writing-plans skill)
 
-### Step 1: Create test-plan.md
+### Step 1: Create test-plan.md (BEFORE implementation plan)
 
-Based on `@test-plan-template.md`, create `docs/features/user-auth/test-plan.md`:
+**When:** During `writing-plans` skill execution
+**Who:** writing-plans agent (NOT implementer)
+
+Based on `@test-plan-template.md`, the planning agent creates `docs/features/user-auth/test-plan.md`:
 
 ```markdown
 # Test Plan: User Authentication
@@ -76,7 +79,87 @@ Implement secure user authentication with email/password, including validation, 
 
 ---
 
+### Step 2: Create implementation-plan.md (AFTER test-plan.md)
+
+**When:** After test-plan.md is complete
+**Who:** writing-plans agent
+
+The planning agent now writes `docs/features/user-auth/implementation-plan.md`, which can reference specific Test IDs from test-plan.md:
+
+```markdown
+# User Authentication Implementation Plan
+
+## Task 0: Initialize Test Reports
+
+- Read: `docs/features/user-auth/test-plan.md` (already exists)
+- Create: `docs/features/user-auth/test-report.md`
+- Create: `docs/features/user-auth/cr-report.md`
+
+## Task 1: Implement TC-001, TC-002 (User login)
+
+**Test IDs:** TC-001 (valid credentials), TC-002 (invalid password)
+
+**Files to create:**
+- `src/auth/authenticate.ts`
+- `tests/auth.test.ts`
+
+[Implementation steps...]
+```
+
+**Key benefit:** Implementation plan can now reference specific Test IDs, creating clear traceability.
+
+---
+
+## Phase 1: Task 0 - Initialize Test Reports (implementer subagent)
+
+**When:** First task in implementation
+**Who:** implementer subagent executing Task 0
+
+### Step 1: Read test-plan.md
+
+Implementer reads `docs/features/user-auth/test-plan.md` to extract all Test IDs.
+
+### Step 2: Create test-report.md
+
+Based on `@test-report-template.md`, initialize `docs/features/user-auth/test-report.md` with ALL Test IDs from test-plan.md:
+
+```markdown
+# Test Report: User Authentication
+
+**Feature Key:** `user-auth`
+**Test Execution Date:** 2026-01-16 14:30:00
+**Executed By:** Development Team
+**Environment:** Development
+
+## Executive Summary
+
+- **Total Test Cases:** 7 (from test-plan.md)
+- **Passed:** 0
+- **In Progress:** 0
+- **Not Started:** 7
+- **Status:** 🔵 Not Started
+
+## TDD Evidence Table
+
+| ID | Scenario | RED Evidence (Before Implementation) | GREEN Evidence (After Implementation) | Test Command | Duration |
+|:---|:---------|:-------------------------------------|:--------------------------------------|:-------------|:---------|
+| TC-001 | User login with valid credentials | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
+| TC-002 | User login with invalid password | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
+| TC-003 | User login with non-existent email | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
+| TC-004 | Empty email field | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
+| TC-005 | Invalid email format | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
+| TC-006 | SQL injection attempt | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
+| TC-007 | User logout | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
+```
+
+**Note:** All Test IDs match exactly with test-plan.md. Ready for RED/GREEN evidence.
+
+---
+
 ## Phase 2: TDD Implementation (RED → GREEN)
+
+**When:** After Task 0 completes
+**Who:** implementer subagent(s) executing implementation tasks
 
 ### Task: Implement TC-001 (Valid Login)
 
