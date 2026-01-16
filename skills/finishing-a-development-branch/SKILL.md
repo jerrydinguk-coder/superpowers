@@ -17,10 +17,11 @@ Guide completion of development work by presenting clear options and handling ch
 
 ### Step 0: Verify Documentation Artifacts
 
-**Before anything else, verify the Feature Documentation exists.**
+**Before anything else, verify the Feature Documentation exists and is complete.**
 
 1.  **Identify Feature Key:** Extract from branch name (e.g., `feature/user-auth` -> `user-auth`) or ask user.
-2.  **Check Artifacts:**
+
+2.  **Check File Existence:**
     Run `ls docs/features/<feature-key>/` and verify ALL 7 files exist:
     *   `business.md`
     *   `prd.md`
@@ -28,7 +29,7 @@ Guide completion of development work by presenting clear options and handling ch
     *   `implementation-plan.md`
     *   `test-plan.md`
     *   `test-report.md`
-    *   `cr-report.md` (Must contain "Status: PASS")
+    *   `cr-report.md`
 
 **If any are missing:**
 ```
@@ -39,7 +40,68 @@ Cannot proceed. Please generate missing documentation.
 ```
 Stop. Don't proceed.
 
-**If all present:** Continue to Step 1.
+3.  **Validate TDD Compliance (CRITICAL):**
+
+    Read `test-plan.md` and `test-report.md` to verify TDD was followed:
+
+    **a. Test ID Mapping:**
+    - Extract all Test IDs from test-plan.md (e.g., TC-001, TC-002, etc.)
+    - Verify EVERY Test ID appears in test-report.md
+    - Verify test-report.md has no extra Test IDs not in test-plan.md
+
+    **b. RED Evidence Validation:**
+    For EVERY Test ID in test-report.md, verify "RED Evidence" column contains:
+    - Error message or failure description
+    - File name where failure occurred
+    - Line number (if applicable)
+    - NOT empty, NOT "N/A", NOT "TBD"
+
+    **c. GREEN Evidence Validation:**
+    For EVERY Test ID in test-report.md, verify "GREEN Evidence" column contains:
+    - Pass confirmation (e.g., "PASS", "✅")
+    - Assertions verified or test duration
+    - NOT empty, NOT "N/A", NOT "TBD"
+
+    **d. Required Sections:**
+    Verify test-report.md includes:
+    - [ ] Executive Summary (with totals, coverage %)
+    - [ ] TDD Evidence Table (with RED/GREEN columns)
+    - [ ] Detailed Test Results (for at least major tests)
+    - [ ] Requirements Coverage (traceability to prd.md)
+    - [ ] Code Coverage Report (statement/branch percentages)
+
+**If TDD validation fails:**
+```
+TDD compliance validation FAILED in docs/features/<feature-key>/test-report.md:
+
+Issues found:
+- [List specific issues, e.g.:]
+  - Test ID TC-003 missing RED evidence
+  - Test ID TC-007 not found in test-report.md
+  - Missing Executive Summary section
+  - Code Coverage Report section empty
+
+Cannot proceed. TDD was not properly followed.
+All tests must have documented RED (failure) and GREEN (pass) evidence.
+```
+Stop. Don't proceed.
+
+4.  **Validate Code Review:**
+    Read `cr-report.md` and verify:
+    - Contains "Status: PASS" or "Status: APPROVED"
+    - If status is "FAIL" or "IN_PROGRESS", stop
+
+**If code review not approved:**
+```
+Code review not approved in docs/features/<feature-key>/cr-report.md
+
+Status: [current status]
+
+Cannot proceed. Code review must be approved before finishing.
+```
+Stop. Don't proceed.
+
+**If all validations pass:** Continue to Step 1.
 
 ### Step 1: Verify Tests
 

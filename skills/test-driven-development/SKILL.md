@@ -48,16 +48,73 @@ Implement fresh from tests. Period.
 
 In the **Artifact-Driven SDD** workflow, TDD is not just a behavior, it's a documented process.
 
-1.  **Plan:** Before writing tests, check `docs/features/<feature-key>/test-plan.md` for the required scenarios (with IDs).
-2.  **Prove (RED):** You MUST run your tests *before* implementing any code.
-3.  **Report (Update Table):** You must update the `docs/features/<feature-key>/test-report.md` table.
+### Phase 1: Planning (Before Implementation)
 
-**Report Table Format:**
-The `test-report.md` MUST duplicate the `test-plan.md` structure but add columns for RED/GREEN evidence:
+**MANDATORY:** Before writing any test or implementation code, `docs/features/<feature-key>/test-plan.md` MUST exist.
 
-| ID | Scenario | RED Evidence (Failure) | GREEN Evidence (Pass) |
-| :--- | :--- | :--- | :--- |
-| TC-001 | ... | `Error: Expected 200 got 404` | `PASS: Status 200` |
+**Template:** Use `@test-plan-template.md` as the base structure.
+
+**Required Elements:**
+- Unique Test IDs (format: `TC-001`, `TC-002`, etc.)
+- Test Categories (Auth, Validation, Security, etc.)
+- Test Types (Unit, Integration, E2E)
+- Priority Levels (P0/P1/P2)
+- Acceptance Criteria (specific, measurable)
+- Requirements Traceability Matrix (links to `prd.md`)
+- Test Classification Summary
+
+**Example test-plan.md structure:**
+```markdown
+| ID | Category | Scenario | Test Type | Priority | Acceptance Criteria | Dependencies | Edge Cases |
+|:---|:---------|:---------|:----------|:---------|:--------------------|:-------------|:-----------|
+| TC-001 | Auth | User login with valid credentials | Integration | P0 | Returns 200, sets auth token | User exists in DB | - |
+| TC-002 | Auth | User login with invalid password | Integration | P0 | Returns 401, shows error | User exists in DB | Multiple failures |
+```
+
+### Phase 2: Prove RED (Before Implementation)
+
+**IRON LAW:** You MUST run your tests *before* implementing any code.
+
+For each test case from `test-plan.md`:
+1. Write the test code
+2. Run the test
+3. **VERIFY IT FAILS** with expected error message
+4. **RECORD the failure** - exact error message, line number, stack trace snippet
+
+**If test passes immediately:** You're testing existing code, not new behavior. STOP. Fix the test.
+
+### Phase 3: Report Evidence (Update test-report.md)
+
+**MANDATORY:** You MUST update `docs/features/<feature-key>/test-report.md` with RED/GREEN evidence.
+
+**Template:** Use `@test-report-template.md` as the base structure.
+
+**Critical Rule:** The `test-report.md` MUST use **identical Test IDs** from `test-plan.md`. One-to-one mapping is MANDATORY.
+
+**Evidence Table Format:**
+```markdown
+| ID | Scenario | RED Evidence (Before Implementation) | GREEN Evidence (After Implementation) | Test Command | Duration |
+|:---|:---------|:-------------------------------------|:--------------------------------------|:-------------|:---------|
+| TC-001 | User login valid | ❌ `ReferenceError: authenticateUser is not defined` @ line 45 | ✅ `PASS` All assertions passed | `npm test auth.test.ts:42-58` | 45ms |
+| TC-002 | Invalid password | ❌ `Expected 401, got undefined` @ line 67 | ✅ `PASS` Status 401 matched | `npm test auth.test.ts:60-72` | 23ms |
+```
+
+**Required Sections in test-report.md:**
+1. **Executive Summary** - Total tests, pass/fail counts, coverage, execution time
+2. **TDD Evidence Table** - RED and GREEN evidence for EVERY test ID
+3. **Detailed Test Results** - Full RED/GREEN output for each test case
+4. **Requirements Coverage** - Which requirements are covered by which tests
+5. **Code Coverage Report** - Statement/branch/function coverage metrics
+6. **Test Classification Summary** - By priority, type, and category
+
+**TDD Compliance Verification:**
+- Every test ID from `test-plan.md` appears in `test-report.md`
+- Every test has documented RED evidence (failure before implementation)
+- Every test has documented GREEN evidence (pass after implementation)
+- RED evidence includes: error message, file name, line number
+- GREEN evidence includes: pass confirmation, assertions verified, duration
+
+**If any test is missing RED evidence:** TDD was violated. Delete implementation and start over.
 
 ## Red-Green-Refactor
 

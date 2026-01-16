@@ -61,18 +61,62 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 - Create: `docs/features/<feature-key>/cr-report.md`
 
 **Description:**
-1.  **Test Plan:** Read `docs/features/<feature-key>/prd.md`, extract Acceptance Criteria and edge cases. Write `test-plan.md` with this table format (IDs REQUIRED):
-    | ID | Category | Scenario Description | Expected Result |
-    | :--- | :--- | :--- | :--- |
-    | TC-001 | Happy Path | ... | ... |
 
-2.  **Test Report:** Create `test-report.md` initialized with the table structure defined in the `test-driven-development` skill:
-    | ID | Scenario | RED Evidence (Failure) | GREEN Evidence (Pass) |
-    | :--- | :--- | :--- | :--- |
+1.  **Test Plan:** Use `@test-plan-template.md` as the base structure.
+    - Read `docs/features/<feature-key>/prd.md` to extract requirements
+    - Read `docs/features/<feature-key>/tech-design.md` to understand architecture
+    - Create comprehensive test scenarios with:
+      - **Unique Test IDs** (TC-001, TC-002, etc.)
+      - **Categories** (Auth, Validation, Security, etc.)
+      - **Test Types** (Unit, Integration, E2E)
+      - **Priority Levels** (P0/P1/P2)
+      - **Acceptance Criteria** (specific, measurable)
+      - **Dependencies** (what must exist for test to run)
+      - **Edge Cases** (boundary conditions, error states)
+    - Include **Requirements Traceability Matrix** linking test cases to requirements
+    - Include **Test Classification Summary** (by priority, type, category)
+
+    **Required table format:**
+    | ID | Category | Scenario | Test Type | Priority | Acceptance Criteria | Dependencies | Edge Cases |
+    |:---|:---------|:---------|:----------|:---------|:--------------------|:-------------|:-----------|
+    | TC-001 | Auth | User login with valid credentials | Integration | P0 | Returns 200, sets auth token | User exists in DB | - |
+
+2.  **Test Report:** Use `@test-report-template.md` as the base structure.
+    - Initialize with header section (Feature Key, Date, Environment)
+    - Create TDD Evidence Table with ALL Test IDs from test-plan.md
+    - Leave RED/GREEN evidence columns empty (to be filled during implementation)
+    - Include sections for: Executive Summary, Detailed Results, Coverage Report, Classification Summary
+
+    **Required table format:**
+    | ID | Scenario | RED Evidence (Before Implementation) | GREEN Evidence (After Implementation) | Test Command | Duration |
+    |:---|:---------|:-------------------------------------|:--------------------------------------|:-------------|:---------|
+    | TC-001 | User login valid | (To be filled during RED phase) | (To be filled during GREEN phase) | - | - |
 
 3.  **CR Report:** Create `cr-report.md` initialized with:
+    ```markdown
     # Code Review Report
-    Status: IN_PROGRESS
+
+    **Feature Key:** <feature-key>
+    **Status:** IN_PROGRESS
+    **Reviewer:** TBD
+    **Date:** TBD
+
+    ## Review Checklist
+    - [ ] All requirements implemented
+    - [ ] TDD followed (RED/GREEN evidence in test-report.md)
+    - [ ] Code quality standards met
+    - [ ] Test coverage adequate
+    - [ ] No security vulnerabilities
+
+    ## Findings
+    (To be filled by reviewer)
+    ```
+
+**Acceptance Criteria:**
+- test-plan.md contains all test scenarios with unique IDs
+- test-plan.md includes Requirements Traceability Matrix
+- test-report.md structure matches test-plan.md (same Test IDs)
+- All three artifact files created and committed
 ```
 
 ## Task Structure
