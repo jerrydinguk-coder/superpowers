@@ -39,7 +39,7 @@
 ### OpenCode
 
 ```bash
-git clone https://github.com/jerrydinguk-coder/superpowers.git ~/.config/opencode/superpowers
+git clone git@github.com:jerrydinguk-coder/superpowers.git ~/.config/opencode/superpowers
 ```
 
 ### 更新
