@@ -10,9 +10,30 @@
 
 ### Claude Code
 
+**第一步：添加 marketplace**
+
+编辑 `~/.claude/plugins/known_marketplaces.json`，添加以下内容：
+
+```json
+{
+  "claude-plugins-official": { ... },
+  "jerrydinguk-superpowers": {
+    "source": {
+      "source": "github",
+      "repo": "jerrydinguk-coder/superpowers"
+    },
+    "installLocation": "/Users/你的用户名/.claude/plugins/marketplaces/jerrydinguk-superpowers",
+    "lastUpdated": "2026-01-17T18:00:00.000Z"
+  }
+}
+```
+
+> 注意：将 `你的用户名` 替换为实际的系统用户名
+
+**第二步：安装插件**
+
 ```bash
-# 直接从 GitHub 安装
-claude /plugin install superpowers@jerrydinguk-coder/superpowers
+/plugin install superpowers-pro@jerrydinguk-superpowers
 ```
 
 ### OpenCode
@@ -25,7 +46,7 @@ git clone https://github.com/jerrydinguk-coder/superpowers.git ~/.config/opencod
 
 ```bash
 # Claude Code
-claude /plugin update superpowers
+/plugin update superpowers-pro@jerrydinguk-superpowers
 
 # OpenCode
 cd ~/.config/opencode/superpowers && git pull
