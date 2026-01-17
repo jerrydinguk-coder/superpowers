@@ -1,20 +1,23 @@
 {
-  "name": "superpowers-dev",
-  "description": "Development marketplace for Superpowers core skills library",
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "superpowers-jerrydinguk",
+  "description": "Optimized skills library for Claude Code by Jerry Ding's team",
   "owner": {
-    "name": "Jesse Vincent",
-    "email": "jesse@fsck.com"
+    "name": "Jerry Ding",
+    "email": "jerrydinguk@example.com"
   },
   "plugins": [
     {
       "name": "superpowers",
-      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
-      "version": "4.0.3",
+      "description": "Optimized skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
+      "version": "4.1.0",
       "source": "./",
       "author": {
-        "name": "Jesse Vincent",
-        "email": "jesse@fsck.com"
-      }
+        "name": "Jerry Ding",
+        "email": "jerrydinguk@example.com"
+      },
+      "category": "development",
+      "homepage": "https://github.com/jerrydinguk-coder/superpowers"
     }
   ]
 }
