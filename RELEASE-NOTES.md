@@ -1,5 +1,57 @@
 # Superpowers Release Notes
 
+## v4.2.0 (2026-02-04)
+
+### New Features
+
+**Batch review skill (`/batch-review`)**
+
+Added new `batch-review` skill that replaces per-task code reviews with a single batch review after all tasks are complete. This dramatically improves efficiency:
+
+- **Old flow:** 5 tasks × 3 subagents (implementer + spec reviewer + code quality reviewer) = 15 subagent calls
+- **New flow:** 5 tasks × 1 subagent + 1 batch review = 6 subagent calls
+- **Savings:** ~60% reduction in subagent calls
+
+Usage:
+```
+/batch-review <feature-key>
+```
+
+The batch reviewer combines spec compliance and code quality review into a single pass, generating `cr-report.md` with results for all tasks.
+
+New files:
+- `skills/batch-review/SKILL.md` - Skill definition with flowchart and usage
+- `skills/batch-review/reviewer-prompt.md` - Combined reviewer prompt template
+
+### Major Changes
+
+**Simplified subagent-driven-development workflow**
+
+Removed mandatory per-task spec reviewer and code quality reviewer from the main workflow. The new streamlined flow:
+
+```
+Per Task: Implementer → Validate test-report.md → Mark complete
+After All Tasks: /batch-review (optional but recommended)
+```
+
+Changes to `subagent-driven-development/SKILL.md`:
+- Updated core principle to emphasize batch review
+- Simplified process flowchart (removed reviewer nodes)
+- Marked legacy reviewer prompts as deprecated
+- Added "Batch Review" section explaining efficiency gains
+- Updated example workflow
+- Updated Red Flags section
+- Added integration reference to `superpowers:batch-review`
+
+**Quality gates preserved**
+
+TDD compliance is still enforced per-task:
+- test-report.md must have RED/GREEN evidence before marking task complete
+- Implementer self-review is still required
+- Batch review catches remaining issues before merge
+
+---
+
 ## v4.0.3 (2025-12-26)
 
 ### Improvements

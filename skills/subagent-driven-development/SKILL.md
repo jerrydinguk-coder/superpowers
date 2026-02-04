@@ -5,9 +5,9 @@ description: Use when executing implementation plans with independent tasks in t
 
 # Subagent-Driven Development
 
-Execute plan by dispatching fresh subagent per task, with two-stage review after each: spec compliance review first, then code quality review.
+Execute plan by dispatching fresh subagent per task. Reviews are optional and can be batched at the end using `/batch-review`.
 
-**Core principle:** Fresh subagent per task + two-stage review (spec then quality) = high quality, fast iteration
+**Core principle:** Fresh subagent per task = fast iteration. Batch review at the end = efficiency without sacrificing quality.
 
 ## When to Use
 
@@ -32,7 +32,7 @@ digraph when_to_use {
 **vs. Executing Plans (parallel session):**
 - Same session (no context switch)
 - Fresh subagent per task (no context pollution)
-- Two-stage review after each task: spec compliance first, then code quality
+- Optional batch review at the end with `/batch-review`
 - Faster iteration (no human-in-loop between tasks)
 
 ## The Process
@@ -56,19 +56,12 @@ digraph process {
         "Implementer appends results to test-report.md" [shape=box style=filled fillcolor=lightblue];
         "VALIDATE: test-report.md has RED/GREEN evidence?" [shape=diamond style=filled fillcolor=yellow];
         "Re-invoke implementer to fill test-report.md" [shape=box];
-        "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [shape=box];
-        "Spec reviewer subagent confirms code matches spec?" [shape=diamond];
-        "Implementer subagent fixes spec gaps" [shape=box];
-        "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [shape=box];
-        "Code quality reviewer subagent approves?" [shape=diamond];
-        "Reviewer writes to cr-report.md" [shape=box style=filled fillcolor=lightblue];
-        "Implementer subagent fixes quality issues" [shape=box];
         "Mark task complete in TodoWrite" [shape=box];
     }
 
     "Read plan, extract all tasks with full text, note context, create TodoWrite" [shape=box];
     "More tasks remain?" [shape=diamond];
-    "Dispatch final code reviewer subagent for entire implementation" [shape=box];
+    "Use /batch-review for batch code review (optional)" [shape=box style=filled fillcolor=lightyellow];
     "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
     "Read plan, extract all tasks with full text, note context, create TodoWrite" -> "Dispatch implementer subagent (./implementer-prompt.md)";
@@ -80,27 +73,26 @@ digraph process {
     "Implementer appends results to test-report.md" -> "VALIDATE: test-report.md has RED/GREEN evidence?";
     "VALIDATE: test-report.md has RED/GREEN evidence?" -> "Re-invoke implementer to fill test-report.md" [label="no - has (pending)"];
     "Re-invoke implementer to fill test-report.md" -> "VALIDATE: test-report.md has RED/GREEN evidence?";
-    "VALIDATE: test-report.md has RED/GREEN evidence?" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [label="yes"];
-    "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" -> "Spec reviewer subagent confirms code matches spec?";
-    "Spec reviewer subagent confirms code matches spec?" -> "Implementer subagent fixes spec gaps" [label="no"];
-    "Implementer subagent fixes spec gaps" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [label="re-review"];
-    "Spec reviewer subagent confirms code matches spec?" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="yes"];
-    "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" -> "Code quality reviewer subagent approves?";
-    "Code quality reviewer subagent approves?" -> "Implementer subagent fixes quality issues" [label="no"];
-    "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="re-review"];
-    "Code quality reviewer subagent approves?" -> "Mark task complete in TodoWrite" [label="yes"];
+    "VALIDATE: test-report.md has RED/GREEN evidence?" -> "Mark task complete in TodoWrite" [label="yes"];
     "Mark task complete in TodoWrite" -> "More tasks remain?";
     "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
-    "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
-    "Dispatch final code reviewer subagent for entire implementation" -> "Use superpowers:finishing-a-development-branch";
+    "More tasks remain?" -> "Use /batch-review for batch code review (optional)" [label="no"];
+    "Use /batch-review for batch code review (optional)" -> "Use superpowers:finishing-a-development-branch";
 }
 ```
 
 ## Prompt Templates
 
 - `./implementer-prompt.md` - Dispatch implementer subagent
-- `./spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent
-- `./code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
+- `./spec-reviewer-prompt.md` - (Legacy) Spec compliance reviewer template, use `/batch-review` instead
+- `./code-quality-reviewer-prompt.md` - (Legacy) Code quality reviewer template, use `/batch-review` instead
+
+## Batch Review
+
+After all tasks are complete, use `/batch-review <feature-key>` to run batch spec compliance and code quality review. This is more efficient than reviewing each task individually:
+
+- **Old flow:** 5 tasks × 3 subagents (implementer + 2 reviewers) = 15 subagent calls
+- **New flow:** 5 tasks × 1 subagent + 1 batch review = 6 subagent calls
 
 ## Example Workflow
 
@@ -125,14 +117,10 @@ Implementer: "Got it. Implementing now..."
   - Implemented install-hook command
   - Added tests, 5/5 passing
   - Self-review: Found I missed --force flag, added it
+  - Updated test-report.md with RED/GREEN evidence
   - Committed
 
-[Dispatch spec compliance reviewer]
-Spec reviewer: ✅ Spec compliant - all requirements met, nothing extra
-
-[Get git SHAs, dispatch code quality reviewer]
-Code reviewer: Strengths: Good test coverage, clean. Issues: None. Approved.
-
+[Validate test-report.md has evidence]
 [Mark Task 1 complete]
 
 Task 2: Recovery modes
@@ -145,35 +133,25 @@ Implementer:
   - Added verify/repair modes
   - 8/8 tests passing
   - Self-review: All good
+  - Updated test-report.md
   - Committed
-
-[Dispatch spec compliance reviewer]
-Spec reviewer: ❌ Issues:
-  - Missing: Progress reporting (spec says "report every 100 items")
-  - Extra: Added --json flag (not requested)
-
-[Implementer fixes issues]
-Implementer: Removed --json flag, added progress reporting
-
-[Spec reviewer reviews again]
-Spec reviewer: ✅ Spec compliant now
-
-[Dispatch code quality reviewer]
-Code reviewer: Strengths: Solid. Issues (Important): Magic number (100)
-
-[Implementer fixes]
-Implementer: Extracted PROGRESS_INTERVAL constant
-
-[Code reviewer reviews again]
-Code reviewer: ✅ Approved
 
 [Mark Task 2 complete]
 
 ...
 
-[After all tasks]
-[Dispatch final code-reviewer]
-Final reviewer: All requirements met, ready to merge
+[After all tasks complete]
+You: /batch-review my-feature
+
+Batch reviewer:
+  ✅ Task 1: Spec compliant, code quality good
+  ⚠️ Task 2: Magic number (100) - minor issue
+  ✅ Task 3-5: All good
+
+  Overall: PASS with 1 minor issue
+
+[Fix minor issue if needed]
+[Use superpowers:finishing-a-development-branch]
 
 Done!
 ```
@@ -189,13 +167,14 @@ Done!
 **vs. Executing Plans:**
 - Same session (no handoff)
 - Continuous progress (no waiting)
-- Review checkpoints automatic
+- Batch review at end (optional)
 
 **Efficiency gains:**
 - No file reading overhead (controller provides full text)
 - Controller curates exactly what context is needed
 - Subagent gets complete information upfront
 - Questions surfaced before work begins (not after)
+- **Batch review:** Review all tasks at once instead of per-task reviews
 
 **Quality gates:**
 - Self-review catches issues before handoff
@@ -204,31 +183,28 @@ Done!
   - Every test must have documented RED evidence (failure message, file, line number)
   - Every test must have documented GREEN evidence (pass confirmation, duration)
   - If code passes immediately without recorded RED evidence, TDD was violated - task is INVALID
-- Two-stage review: spec compliance first, then code quality
-- Review loops ensure fixes actually work
-- Spec compliance prevents over/under-building
-- Code quality ensures implementation is well-built
+- Optional batch review via `/batch-review` covers spec compliance + code quality
+- Catches issues before merging
 
 **Cost:**
-- More subagent invocations (implementer + 2 reviewers per task)
+- Minimal subagent invocations (implementer per task + optional batch review)
 - Controller does more prep work (extracting all tasks upfront)
-- Review loops add iterations
-- But catches issues early (cheaper than debugging later)
+- Efficient: 5 tasks = ~6 subagent calls (vs 15 with per-task reviews)
 
 ## MANDATORY: Report Validation Checkpoint
 
-**After each implementer subagent completes, BEFORE dispatching spec reviewer:**
+**After each implementer subagent completes, BEFORE marking task complete:**
 
 1. **Read `test-report.md`** and check for `(pending)` entries
 2. **If ANY `(pending)` entries exist for the current task's Test IDs:**
-   - ❌ STOP - Do NOT proceed to spec review
+   - ❌ STOP - Do NOT mark task complete
    - Re-invoke implementer with explicit instruction:
      ```
      "You completed the implementation but did NOT update test-report.md.
       Update it NOW with RED and GREEN evidence for: [list Test IDs]"
      ```
    - Verify again after implementer responds
-3. **Only proceed to spec review when:**
+3. **Only mark task complete when:**
    - ✅ All Test IDs for current task have RED evidence (actual error messages)
    - ✅ All Test IDs for current task have GREEN evidence (pass confirmation)
    - ✅ No `(pending)`, `TBD`, or `N/A` entries remain
@@ -237,44 +213,37 @@ Done!
 ```bash
 grep -n "(pending)" docs/features/<feature-key>/test-report.md
 # If any output → FAIL validation → re-invoke implementer
-# If no output → PASS validation → proceed to spec review
+# If no output → PASS validation → mark task complete
 ```
 
 **Why this matters:**
 - Implementer subagents sometimes "forget" to update reports
 - Empty reports make TDD verification impossible
-- Spec reviewer cannot validate without evidence
+- Batch reviewer cannot validate without evidence
 - This checkpoint ensures reports are always filled
 
 ## Red Flags
 
 **Never:**
-- **Skip report validation checkpoint** (MUST verify test-report.md before spec review)
-- Skip reviews (spec compliance OR code quality)
-- Proceed with unfixed issues
+- **Skip report validation checkpoint** (MUST verify test-report.md before marking task complete)
 - Dispatch multiple implementation subagents in parallel (conflicts)
 - Make subagent read plan file (provide full text instead)
 - Skip scene-setting context (subagent needs to understand where task fits)
 - Ignore subagent questions (answer before letting them proceed)
-- Accept "close enough" on spec compliance (spec reviewer found issues = not done)
-- Skip review loops (reviewer found issues = implementer fixes = review again)
-- Let implementer self-review replace actual review (both are needed)
-- **Start code quality review before spec compliance is ✅** (wrong order)
-- Move to next task while either review has open issues
 - **Accept test reports without strict Test ID mapping** (Every TC-XXX in test-plan.md must have matching entry in test-report.md)
 - **Accept test reports without detailed RED evidence** (Must include: error message, file name, line number)
 - **Accept test reports without detailed GREEN evidence** (Must include: pass confirmation, assertions verified, duration)
 - **Accept test reports missing any of: Executive Summary, Coverage Report, Requirements Coverage, Classification Summary**
+- Skip `/batch-review` before merging (quality check is still important, just batched)
 
 **If subagent asks questions:**
 - Answer clearly and completely
 - Provide additional context if needed
 - Don't rush them into implementation
 
-**If reviewer finds issues:**
-- Implementer (same subagent) fixes them
-- Reviewer reviews again
-- Repeat until approved
+**If batch review finds issues:**
+- Dispatch fix subagent with specific instructions for each issue
+- Re-run `/batch-review` after fixes
 - Don't skip the re-review
 
 **If subagent fails task:**
@@ -285,8 +254,10 @@ grep -n "(pending)" docs/features/<feature-key>/test-report.md
 
 **Required workflow skills:**
 - **superpowers:writing-plans** - Creates the plan this skill executes
-- **superpowers:requesting-code-review** - Code review template for reviewer subagents
 - **superpowers:finishing-a-development-branch** - Complete development after all tasks
+
+**Batch review skill:**
+- **superpowers:batch-review** - Run `/batch-review <feature-key>` after all tasks complete
 
 **Subagents should use:**
 - **superpowers:test-driven-development** - Subagents follow TDD for each task
