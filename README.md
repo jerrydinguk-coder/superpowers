@@ -57,14 +57,14 @@ cd ~/.config/opencode/superpowers && git pull
 ## 工作流程
 
 ```
-用户需求 → Brainstorming → Writing Plans → Subagent Execution → Finishing Branch
-              ↓                  ↓                  ↓                  ↓
-         收集需求/设计      创建测试+实施计划    TDD实现+双重审查     验证/合并/PR
+用户需求 → Brainstorming → Writing Plans → Subagent Execution → Batch Review → Finishing Branch
+              ↓                  ↓                  ↓                  ↓              ↓
+         收集需求/设计      创建测试+实施计划    TDD实现+自检      批量代码审查    验证/合并/PR
 ```
 
 **关键特性：**
 - RED-GREEN TDD：先写测试看失败，再写代码看通过
-- 双重审查：规范合规 + 代码质量
+- 批量审查：完成所有任务后使用 `/batch-review` 一次性审查（规范合规 + 代码质量）
 - 完整追溯：需求 → 测试 → 代码 → 审查
 
 ---
@@ -77,6 +77,7 @@ cd ~/.config/opencode/superpowers && git pull
 | `brainstorming` | 需求收集与设计 |
 | `writing-plans` | 测试计划 + 实施计划 |
 | `subagent-driven-development` | 当前会话逐任务执行 |
+| `batch-review` | 批量代码审查（完成所有任务后使用） |
 | `test-driven-development` | TDD 工作流 |
 | `systematic-debugging` | 系统化调试 |
 | `verification-before-completion` | 完成前验证 |
@@ -103,7 +104,7 @@ docs/features/<feature-key>/
 
 ## 版本信息
 
-- **当前版本**: 4.1.0
+- **当前版本**: 4.2.0
 - **上游版本**: [obra/superpowers](https://github.com/obra/superpowers) v4.0.3
 - **许可证**: MIT
 
