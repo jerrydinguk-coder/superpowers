@@ -57,15 +57,16 @@ cd ~/.config/opencode/superpowers && git pull
 ## 工作流程
 
 ```
-用户需求 → Brainstorming → Writing Plans → Subagent Execution → Batch Review → Finishing Branch
-              ↓                  ↓                  ↓                  ↓              ↓
-         收集需求/设计      创建测试+实施计划    TDD实现+自检      批量代码审查    验证/合并/PR
+用户需求 → Brainstorming → Writing Plans → Subagent Execution → Finishing Branch
+              ↓                  ↓                  ↓                  ↓
+         收集需求/设计      创建测试+实施计划    TDD实现+自检       验证/合并/PR
 ```
 
 **关键特性：**
 - RED-GREEN TDD：先写测试看失败，再写代码看通过
-- 批量审查：完成所有任务后使用 `/batch-review` 一次性审查（规范合规 + 代码质量）
-- 完整追溯：需求 → 测试 → 代码 → 审查
+- 自检机制：每个 implementer subagent 自带 TDD 验证
+- 完整追溯：需求 → 测试 → 代码 → 验证
+- 可选审查：需要时使用 `/batch-review` 批量审查
 
 ---
 
@@ -77,11 +78,11 @@ cd ~/.config/opencode/superpowers && git pull
 | `brainstorming` | 需求收集与设计 |
 | `writing-plans` | 测试计划 + 实施计划 |
 | `subagent-driven-development` | 当前会话逐任务执行 |
-| `batch-review` | 批量代码审查（完成所有任务后使用） |
-| `test-driven-development` | TDD 工作流 |
-| `systematic-debugging` | 系统化调试 |
-| `verification-before-completion` | 完成前验证 |
 | `finishing-a-development-branch` | 完成与集成 |
+| `test-driven-development` | TDD 工作流（辅助） |
+| `systematic-debugging` | 系统化调试（辅助） |
+| `verification-before-completion` | 完成前验证（辅助） |
+| `batch-review` | 批量代码审查（可选，手动触发） |
 
 ---
 

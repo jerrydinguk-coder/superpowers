@@ -5,9 +5,9 @@ description: Use when executing implementation plans with independent tasks in t
 
 # Subagent-Driven Development
 
-Execute plan by dispatching fresh subagent per task. Reviews are optional and can be batched at the end using `/batch-review`.
+Execute plan by dispatching fresh subagent per task. Each implementer self-reviews and validates TDD evidence.
 
-**Core principle:** Fresh subagent per task = fast iteration. Batch review at the end = efficiency without sacrificing quality.
+**Core principle:** Fresh subagent per task = fast iteration. TDD + self-review = quality without overhead.
 
 ## When to Use
 
@@ -32,7 +32,6 @@ digraph when_to_use {
 **vs. Executing Plans (parallel session):**
 - Same session (no context switch)
 - Fresh subagent per task (no context pollution)
-- Optional batch review at the end with `/batch-review`
 - Faster iteration (no human-in-loop between tasks)
 
 ## The Process
@@ -61,7 +60,6 @@ digraph process {
 
     "Read plan, extract all tasks with full text, note context, create TodoWrite" [shape=box];
     "More tasks remain?" [shape=diamond];
-    "Use /batch-review for batch code review (optional)" [shape=box style=filled fillcolor=lightyellow];
     "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
     "Read plan, extract all tasks with full text, note context, create TodoWrite" -> "Dispatch implementer subagent (./implementer-prompt.md)";
@@ -76,23 +74,15 @@ digraph process {
     "VALIDATE: test-report.md has RED/GREEN evidence?" -> "Mark task complete in TodoWrite" [label="yes"];
     "Mark task complete in TodoWrite" -> "More tasks remain?";
     "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
-    "More tasks remain?" -> "Use /batch-review for batch code review (optional)" [label="no"];
-    "Use /batch-review for batch code review (optional)" -> "Use superpowers:finishing-a-development-branch";
+    "More tasks remain?" -> "Use superpowers:finishing-a-development-branch" [label="no"];
 }
 ```
 
 ## Prompt Templates
 
 - `./implementer-prompt.md` - Dispatch implementer subagent
-- `./spec-reviewer-prompt.md` - (Legacy) Spec compliance reviewer template, use `/batch-review` instead
-- `./code-quality-reviewer-prompt.md` - (Legacy) Code quality reviewer template, use `/batch-review` instead
-
-## Batch Review
-
-After all tasks are complete, use `/batch-review <feature-key>` to run batch spec compliance and code quality review. This is more efficient than reviewing each task individually:
-
-- **Old flow:** 5 tasks × 3 subagents (implementer + 2 reviewers) = 15 subagent calls
-- **New flow:** 5 tasks × 1 subagent + 1 batch review = 6 subagent calls
+- `./spec-reviewer-prompt.md` - (Legacy) Not used in main flow
+- `./code-quality-reviewer-prompt.md` - (Legacy) Not used in main flow
 
 ## Example Workflow
 
@@ -141,16 +131,6 @@ Implementer:
 ...
 
 [After all tasks complete]
-You: /batch-review my-feature
-
-Batch reviewer:
-  ✅ Task 1: Spec compliant, code quality good
-  ⚠️ Task 2: Magic number (100) - minor issue
-  ✅ Task 3-5: All good
-
-  Overall: PASS with 1 minor issue
-
-[Fix minor issue if needed]
 [Use superpowers:finishing-a-development-branch]
 
 Done!
@@ -167,14 +147,13 @@ Done!
 **vs. Executing Plans:**
 - Same session (no handoff)
 - Continuous progress (no waiting)
-- Batch review at end (optional)
 
 **Efficiency gains:**
 - No file reading overhead (controller provides full text)
 - Controller curates exactly what context is needed
 - Subagent gets complete information upfront
 - Questions surfaced before work begins (not after)
-- **Batch review:** Review all tasks at once instead of per-task reviews
+- No per-task reviewers - just implementer per task
 
 **Quality gates:**
 - Self-review catches issues before handoff
@@ -183,13 +162,11 @@ Done!
   - Every test must have documented RED evidence (failure message, file, line number)
   - Every test must have documented GREEN evidence (pass confirmation, duration)
   - If code passes immediately without recorded RED evidence, TDD was violated - task is INVALID
-- Optional batch review via `/batch-review` covers spec compliance + code quality
-- Catches issues before merging
 
 **Cost:**
-- Minimal subagent invocations (implementer per task + optional batch review)
+- Minimal subagent invocations (implementer per task only)
 - Controller does more prep work (extracting all tasks upfront)
-- Efficient: 5 tasks = ~6 subagent calls (vs 15 with per-task reviews)
+- Efficient: 5 tasks = 5 subagent calls
 
 ## MANDATORY: Report Validation Checkpoint
 
@@ -219,7 +196,6 @@ grep -n "(pending)" docs/features/<feature-key>/test-report.md
 **Why this matters:**
 - Implementer subagents sometimes "forget" to update reports
 - Empty reports make TDD verification impossible
-- Batch reviewer cannot validate without evidence
 - This checkpoint ensures reports are always filled
 
 ## Red Flags
@@ -234,17 +210,11 @@ grep -n "(pending)" docs/features/<feature-key>/test-report.md
 - **Accept test reports without detailed RED evidence** (Must include: error message, file name, line number)
 - **Accept test reports without detailed GREEN evidence** (Must include: pass confirmation, assertions verified, duration)
 - **Accept test reports missing any of: Executive Summary, Coverage Report, Requirements Coverage, Classification Summary**
-- Skip `/batch-review` before merging (quality check is still important, just batched)
 
 **If subagent asks questions:**
 - Answer clearly and completely
 - Provide additional context if needed
 - Don't rush them into implementation
-
-**If batch review finds issues:**
-- Dispatch fix subagent with specific instructions for each issue
-- Re-run `/batch-review` after fixes
-- Don't skip the re-review
 
 **If subagent fails task:**
 - Dispatch fix subagent with specific instructions
@@ -255,9 +225,6 @@ grep -n "(pending)" docs/features/<feature-key>/test-report.md
 **Required workflow skills:**
 - **superpowers:writing-plans** - Creates the plan this skill executes
 - **superpowers:finishing-a-development-branch** - Complete development after all tasks
-
-**Batch review skill:**
-- **superpowers:batch-review** - Run `/batch-review <feature-key>` after all tasks complete
 
 **Subagents should use:**
 - **superpowers:test-driven-development** - Subagents follow TDD for each task
