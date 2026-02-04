@@ -54,6 +54,8 @@ digraph process {
         "Answer questions, provide context" [shape=box];
         "Implementer subagent implements, tests, commits, self-reviews" [shape=box];
         "Implementer appends results to test-report.md" [shape=box style=filled fillcolor=lightblue];
+        "VALIDATE: test-report.md has RED/GREEN evidence?" [shape=diamond style=filled fillcolor=yellow];
+        "Re-invoke implementer to fill test-report.md" [shape=box];
         "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [shape=box];
         "Spec reviewer subagent confirms code matches spec?" [shape=diamond];
         "Implementer subagent fixes spec gaps" [shape=box];
@@ -74,7 +76,11 @@ digraph process {
     "Implementer subagent asks questions?" -> "Answer questions, provide context" [label="yes"];
     "Answer questions, provide context" -> "Dispatch implementer subagent (./implementer-prompt.md)";
     "Implementer subagent asks questions?" -> "Implementer subagent implements, tests, commits, self-reviews" [label="no"];
-    "Implementer subagent implements, tests, commits, self-reviews" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)";
+    "Implementer subagent implements, tests, commits, self-reviews" -> "Implementer appends results to test-report.md";
+    "Implementer appends results to test-report.md" -> "VALIDATE: test-report.md has RED/GREEN evidence?";
+    "VALIDATE: test-report.md has RED/GREEN evidence?" -> "Re-invoke implementer to fill test-report.md" [label="no - has (pending)"];
+    "Re-invoke implementer to fill test-report.md" -> "VALIDATE: test-report.md has RED/GREEN evidence?";
+    "VALIDATE: test-report.md has RED/GREEN evidence?" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [label="yes"];
     "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" -> "Spec reviewer subagent confirms code matches spec?";
     "Spec reviewer subagent confirms code matches spec?" -> "Implementer subagent fixes spec gaps" [label="no"];
     "Implementer subagent fixes spec gaps" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [label="re-review"];
@@ -209,9 +215,41 @@ Done!
 - Review loops add iterations
 - But catches issues early (cheaper than debugging later)
 
+## MANDATORY: Report Validation Checkpoint
+
+**After each implementer subagent completes, BEFORE dispatching spec reviewer:**
+
+1. **Read `test-report.md`** and check for `(pending)` entries
+2. **If ANY `(pending)` entries exist for the current task's Test IDs:**
+   - ❌ STOP - Do NOT proceed to spec review
+   - Re-invoke implementer with explicit instruction:
+     ```
+     "You completed the implementation but did NOT update test-report.md.
+      Update it NOW with RED and GREEN evidence for: [list Test IDs]"
+     ```
+   - Verify again after implementer responds
+3. **Only proceed to spec review when:**
+   - ✅ All Test IDs for current task have RED evidence (actual error messages)
+   - ✅ All Test IDs for current task have GREEN evidence (pass confirmation)
+   - ✅ No `(pending)`, `TBD`, or `N/A` entries remain
+
+**Validation command:**
+```bash
+grep -n "(pending)" docs/features/<feature-key>/test-report.md
+# If any output → FAIL validation → re-invoke implementer
+# If no output → PASS validation → proceed to spec review
+```
+
+**Why this matters:**
+- Implementer subagents sometimes "forget" to update reports
+- Empty reports make TDD verification impossible
+- Spec reviewer cannot validate without evidence
+- This checkpoint ensures reports are always filled
+
 ## Red Flags
 
 **Never:**
+- **Skip report validation checkpoint** (MUST verify test-report.md before spec review)
 - Skip reviews (spec compliance OR code quality)
 - Proceed with unfixed issues
 - Dispatch multiple implementation subagents in parallel (conflicts)
