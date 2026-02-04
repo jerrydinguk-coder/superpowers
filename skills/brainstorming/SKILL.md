@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "Use when user explicitly requests brainstorming, design exploration, or /brainstorm command. Explores user intent, requirements and design before implementation."
+description: "MANUAL TRIGGER ONLY - Use ONLY when user explicitly says /brainstorm or 'let's brainstorm'. Do NOT auto-trigger on 'add feature' or 'build X' requests."
 ---
 
 # Brainstorming Ideas Into Designs
